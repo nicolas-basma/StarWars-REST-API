@@ -86,9 +86,9 @@ def all_users():
 
 @app.route('/users/favorites', methods=['GET'])
 def all_favorites():
-    favorite = db.session.query(Favorite).all()
-    favorite = list(map(lambda favorite: favorite.serialize(), favorite))
-    return jsonify(favorite), 200
+    favorite_user = db.session.query(Favorite).all()
+    favorite_user = list(map(lambda favorite: favorite_user.serialize(), favorite_user))
+    return jsonify(favorite_user), 200
 
 
 

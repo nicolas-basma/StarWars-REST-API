@@ -9,7 +9,7 @@ class User(db.Model):
     is_active = db.Column(db.Boolean(), unique=False, nullable=False, default=True)
 
     def __repr__(self):
-        return '<User %r>' % self.username
+        return '<User %r>' % self.email
 
     def serialize(self):
         return {
@@ -79,12 +79,20 @@ class Vehicle(db.Model):
         
 class Favorite(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120), nullable=False, unique=False)
+    character = db.Column(db.String(120), nullable=False, unique=False)
+    planets = db.Column(db.String(120), nullable=False, unique=False)
+    vehicles = db.Column(db.String(120), nullable=False, unique=False)
 
     def __repr__(self):
-        return '<Favorites %r>' % self.id
+        return '<Favorites %r>' % self.name
 
     def serialize(self):
         return{
             "id": self.id,
+            "name": self.name,
+            "character": self.character,
+            "planets": self.planets,
+            "vehicles": self.vehicles
         }
 
