@@ -1,12 +1,19 @@
 from flask_sqlalchemy import SQLAlchemy
 
+
 db = SQLAlchemy()
+
+favorite_character = db.Table("favorite_character",
+db.Column("id", db.Integer, primary_key=True),
+db.Column("user_id",db.Integer,db.ForeignKey("user.id")),
+db.Column("character_id",db.Integer, db.ForeignKey("character.id")))
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=False, nullable=False)
     is_active = db.Column(db.Boolean(), unique=False, nullable=False, default=True)
+    favorite_characters = db.relationship("Character",  backref=db.backref('users'), secondary=favorite_character)
 
     def __repr__(self):
         return '<User %r>' % self.email
@@ -24,8 +31,10 @@ class Character(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), nullable=False, unique=True)
     gender = db.Column(db.String(120), nullable=False, unique=False)
-    homeworld = db.Column(db.String(120), nullable=False, unique=False)#
+    planet_id = db.Column(db.Integer, db.ForeignKey("planet.id"))
+    homeworld = db.relationship("Planet", back_populates="residents")
     vehicles =  db.Column(db.String(120), nullable=False, unique=False)#
+
 
     def __repr__(self):
         return '<Character %r>' % self.name
@@ -44,7 +53,7 @@ class Planet(db.Model):
     name = db.Column(db.String(120), nullable=False, unique=True)
     terrain = db.Column(db.Integer, nullable=True, unique=False)
     population = db.Column(db.Integer, nullable=True, unique=False)
-    residents = db.Column(db.Integer, nullable=True, unique=False)#
+    residents = db.relationship("Character",back_populates="homeworld")
 
     def __repr__(self):
         return '<Planet %r>' % self.name
@@ -76,13 +85,19 @@ class Vehicle(db.Model):
             "passengers": self.passengers,
             "pilots": self.pilots
         }
-        
-class Favorite(db.Model):
+
+
+
+
+
+class Favorite_Planet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120), nullable=False, unique=False)
-    character = db.Column(db.String(120), nullable=False, unique=False)
-    planets = db.Column(db.String(120), nullable=False, unique=False)
-    vehicles = db.Column(db.String(120), nullable=False, unique=False)
+    
+
+
+class Favorite_Vehicle(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+  
 
     def __repr__(self):
         return '<Favorites %r>' % self.name
