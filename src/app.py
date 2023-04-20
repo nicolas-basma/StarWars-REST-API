@@ -46,7 +46,7 @@ def all_people():
 
 @app.route('/people/<int:people_id>', methods=['GET'])
 def get_character(people_id):
-    character = db.session.query(Character).filter(Character.id == people_id).first()
+    character = db.get_or_404(Character, people_id)
     return jsonify(character.serialize()), 201
 
 
@@ -59,7 +59,7 @@ def all_planets():
 
 @app.route('/planets/<int:planets_id>', methods=['GET'])
 def get_planet(planets_id):
-    planet = db.session.query(Planet).filter(Planet.id == planets_id).first()
+    planet = db.get_or_404(Planet, planets_id)
     return jsonify(planet.serialize()), 201
 
 
@@ -67,12 +67,13 @@ def get_planet(planets_id):
 @app.route('/vehicles', methods=['GET'])
 def all_vehicles():
     vehicles = db.session.query(Vehicle).all()
+    print(vehicles)
     vehicles = list(map(lambda vehicle: vehicle.serialize(),vehicles))
     return jsonify(vehicles), 200
 
 @app.route('/vehicles/<int:vehicles_id>', methods=['GET'])
 def get_vehicles(vehicles_id):
-    vehicle = db.session.query(Vehicle).filter(Vehicle.id == vehicles_id).first()
+    vehicle = db.get_or_404(Vehicle, vehicles_id)
     return jsonify(vehicle.serialize()), 201
 
 
@@ -84,13 +85,14 @@ def all_users():
     users = list(map(lambda user: user.serialize(),users))
     return jsonify(users), 200
 
-@app.route('/users/favorites', methods=['GET'])
-def all_favorites():
-    favorite_user = db.session.query(Favorite).all()
-    favorite_user = list(map(lambda favorite: favorite_user.serialize(), favorite_user))
-    return jsonify(favorite_user), 200
+@app.route('/users/<int:user_id>', methods=['GET'])
+def handle_get_user(user_id):
+    user = User.query.get_or_404(user_id)
+    return jsonify(user.serialize()
+)
 
-
+#################usersFavorites###################
+##@app.route('/users/')
 
 
 

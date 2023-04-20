@@ -46,7 +46,7 @@ class Character(db.Model):
     planet_id = db.Column(db.Integer, db.ForeignKey("planet.id"))
     vehicle_id = db.Column(db.Integer, db.ForeignKey("vehicle.id"))
     homeworld = db.relationship("Planet", back_populates="residents")
-    vehicles =  db.relationship("Vehicle", back_populates="pilots")
+    vehicle =  db.relationship("Vehicle", back_populates="pilots")
     def __repr__(self):
         return "%r" % self.name
     def serialize(self):
@@ -54,8 +54,8 @@ class Character(db.Model):
             "id": self.id,
             "name": self.name,
             "gender": self.gender,
-            "homeworld": self.homeworld.serialize(),
-            "vehicles": self.vehicles
+            "homeworld": self.homeworld.name,
+            "vehicle": self.vehicle.name
         }
 
 class Planet(db.Model):
@@ -72,7 +72,7 @@ class Planet(db.Model):
             "name": self.name,
             "terrain": self.terrain,
             "population": self.population,
-            "residents": self.residents
+            "residents": [resident.name for resident in self.residents]
         }
 
 class Vehicle(db.Model):
@@ -80,7 +80,7 @@ class Vehicle(db.Model):
     name = db.Column(db.String(120), nullable=False, unique=False)
     model = db.Column(db.String(120), nullable=False, unique=True)
     passengers = db.Column(db.Integer, nullable=False, unique=False)
-    pilots = db.relationship("Character", back_populates="vehicles")
+    pilots = db.relationship("Character", back_populates="vehicle")
     def __repr__(self):
         return '%r' % self.name
     def serialize(self):
@@ -89,6 +89,6 @@ class Vehicle(db.Model):
             "name": self.name,
             "model": self.model,
             "passengers": self.passengers,
-            "pilots": self.pilots
+            "pilots": [pilot.name for pilot in self.pilots]
         }
 
