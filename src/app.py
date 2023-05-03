@@ -92,11 +92,103 @@ def handle_get_user(user_id):
 )
 
 #################usersFavorites###################
-##@app.route('/users/')
+@app.route('/users/<int:user_id>/favorites', methods=['GET'])
+def handle_get_favorite(user_id):
+    user = User.query.get_or_404(user_id)
+    return jsonify(user.favorites())
 
+@app.route('/users/<int:user_id>/favorites/people/<int:people_id>', methods=['POST'])
+def handle_add_people(user_id, people_id):
+    user = User.query.get_or_404(user_id)
+    user.add_favorite('people' , people_id)
+    return  {"message": "favorite added"}, 200
 
+@app.route('/users/<int:user_id>/favorites/people/<int:people_id>', methods=['DELETE'])
+def handle_delete_people(user_id, people_id):
+    user = User.query.get_or_404(user_id)
+    user.remove_favorite('people' , people_id)
+    return  {"message": "favorite deleted"}, 200
 
+@app.route('/users/<int:user_id>/favorites/planets/<int:planets_id>', methods=['POST'])
+def handle_add_planets(user_id, planets_id):
+    user = User.query.get_or_404(user_id)
+    user.add_favorite('planets' , planets_id)
+    return  {"message": "favorite added"}, 200
 
+@app.route('/users/<int:user_id>/favorites/planets/<int:planets_id>', methods=['DELETE'])
+def handle_delete_planets(user_id, planets_id):
+    user = User.query.get_or_404(user_id)
+    user.remove_favorite('planets' , planets_id)
+    return  {"message": "favorite deleted"}, 200
+
+@app.route('/users/<int:user_id>/favorites/vehicles/<int:vehicles_id>', methods=['POST'])
+def handle_add_vehicles(user_id, vehicles_id):
+    user = User.query.get_or_404(user_id)
+    user.add_favorite('vehicles' , vehicles_id)
+    return  {"message": "favorite added"}, 200
+
+@app.route('/users/<int:user_id>/favorites/vehicles/<int:vehicles_id>', methods=['DELETE'])
+def handle_delete_vehicles(user_id, vehicles_id):
+    user = User.query.get_or_404(user_id)
+    user.remove_favorite('vehicles' , vehicles_id)
+    return  {"message": "favorite deleted"}, 200
+
+@app.route("/add-people", methods=["POST"])
+def add_people():
+    new_people = request.json
+    new_char = Character(
+        name = new_people["name"],
+        gender = new_people["gender"]
+    )
+    db.session.add(new_char)
+    db.session.commit()
+    return {"message": "Character created successfully"}, 200
+
+@app.route("/delete-people/<int:people_id>", methods=["DELETE"])
+def delete_people(people_id):
+    people = Character.query.get(people_id)
+    db.session.delete(people)
+    db.session.commit()
+    return {"message": "Character deleted successfully"}, 200
+
+@app.route("/add-planet", methods=["POST"])
+def add_planet():
+    new_planet = request.json
+    new_planet = Planet(
+        name = new_planet["name"],
+        terrain = new_planet["terrain"],
+        population = new_planet["population"],
+        resident = new_planet["resident"]
+    )
+    db.session.add(new_planet)
+    db.session.commit()
+    return {"message": "Planet created successfully"}, 200
+
+@app.route("/delete-planet/<int:planets_id>", methods=["DELETE"])
+def delete_planet(planets_id):
+    planet = Planet.query.get(planets_id)
+    db.session.delete(planet)
+    db.session.commit()
+    return {"message": "Planet deleted successfully"}, 200
+
+@app.route("/add-vehicle", methods=["POST"])
+def add_vehicle():
+    new_vehicle = request.json
+    new_vehicle = Vehicle(
+        name = new_vehicle["name"],
+        model = new_vehicle["model"],
+        passenger = new_vehicle["passenger"],
+    )
+    db.session.add(new_vehicle)
+    db.session.commit()
+    return {"message": "Vehicle created successfully"}, 200
+
+@app.route("/delete-vehicle/<int:vehicles_id>", methods=["DELETE"])
+def delete_vehicle(vehicles_id):
+    vehicle = Vehicle.query.get(vehicles_id)
+    db.session.delete(vehicle)
+    db.session.commit()
+    return {"message": "Vehicle deleted successfully"}, 200
     
 
 # this only runs if `$ python src/app.py` is executed

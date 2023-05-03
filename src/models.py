@@ -37,6 +37,29 @@ class User(db.Model):
             "favorite_planets": [f'{planet}' for planet in self.favorite_planets]
             # do not serialize the password, its a security breach
         }
+    def favorites(self):
+        return {
+            "favorite_characters": [character.serialize() for character in self.favorite_characters],
+            "favorite_vehicles": [vehicle.serialize() for vehicle in self.favorite_vehicles],
+            "favorite_planets": [planet.serialize() for planet in self.favorite_planets]
+        }
+    def add_favorite(self, type, id):
+        if type == "people":
+            self.favorite_characters.append(Character.query.get(id))
+        elif type == "planets":
+            self.favorite_planets.append(Planet.query.get(id))
+        elif type == "vehicles":
+            self.favorite_vehicles.append(Vehicle.query.get(id))
+        db.session.commit()
+
+    def remove_favorite(self, type, id):
+        if type == "people":
+            self.favorite_characters.remove(Character.query.get(id))
+        elif type == "planets":
+            self.favorite_planets.remove(Planet.query.get(id))
+        elif type == "vehicles":
+            self.favorite_vehicles.remove(Vehicle.query.get(id))
+        db.session.commit()
 
 
 class Character(db.Model):
@@ -57,6 +80,8 @@ class Character(db.Model):
             "homeworld": self.homeworld.name,
             "vehicle": self.vehicle.name
         }
+
+
 
 class Planet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
