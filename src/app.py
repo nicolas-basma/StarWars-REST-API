@@ -144,6 +144,13 @@ def add_people():
     db.session.commit()
     return {"message": "Character created successfully"}, 200
 
+@app.route("/update-people/<int:people_id>", methods=["PUT"])
+def update_people(people_id):
+    people_to_update = Character.query.get(people_id)
+    people_to_update.name = request.json["name"]
+    people_to_update.gender = request.json["gender"]
+    db.session.commit()
+
 @app.route("/delete-people/<int:people_id>", methods=["DELETE"])
 def delete_people(people_id):
     people = Character.query.get(people_id)
@@ -164,6 +171,15 @@ def add_planet():
     db.session.commit()
     return {"message": "Planet created successfully"}, 200
 
+@app.route("/update-planet/<int:planets_id>", methods=["PUT"])
+def update_planet(planets_id):
+    planet_to_update = Planet.query.get(planets_id)
+    planet_to_update.name = request.json["name"]
+    planet_to_update.terrain = request.json["terrain"]
+    planet_to_update.population = request.json["population"]
+    planet_to_update.resident = request.json["resident"]
+    db.session.commit()
+
 @app.route("/delete-planet/<int:planets_id>", methods=["DELETE"])
 def delete_planet(planets_id):
     planet = Planet.query.get(planets_id)
@@ -182,6 +198,14 @@ def add_vehicle():
     db.session.add(new_vehicle)
     db.session.commit()
     return {"message": "Vehicle created successfully"}, 200
+
+@app.route("/update-vehicle/<int:vehicles_id>", methods=["PUT"])
+def update_vehicle(vehicles_id):
+    vehicle_to_update = Vehicle.query.get(vehicles_id)
+    vehicle_to_update.name = request.json["name"]
+    vehicle_to_update.model = request.json["model"]
+    vehicle_to_update.passenger = request.json["passenger"]
+    db.session.commit()
 
 @app.route("/delete-vehicle/<int:vehicles_id>", methods=["DELETE"])
 def delete_vehicle(vehicles_id):
